@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TikTok Auth — FounderClips</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <div class="logo">⚡ FounderClips</div>
+  </header>
+
+  <div class="callback-box">
+    <h1 id="status-title">Processing...</h1>
+    <p id="status-msg">Handling TikTok authorisation.</p>
+
+    <div id="code-section" style="display:none;">
+      <p style="color:#888;font-size:0.85rem;margin-bottom:0.5rem;">Authorisation code received:</p>
+      <div class="code-block" id="code-display"></div>
+      <p style="color:#888;font-size:0.8rem;">Copy this code and paste it into your app to exchange for an access token.</p>
+    </div>
+
+    <div id="error-section" style="display:none;">
+      <div class="code-block" id="error-display"></div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const params = new URLSearchParams(window.location.search);
+      const code    = params.get('code');
+      const error   = params.get('error');
+      const errDesc = params.get('error_description');
+
+      const title   = document.getElementById('status-title');
+      const msg     = document.getElementById('status-msg');
+
+      if (code) {
+        title.textContent = '✅ Authorisation Successful';
+        title.className   = 'status-ok';
+        msg.textContent   = 'TikTok returned an authorisation code successfully.';
+        document.getElementById('code-section').style.display = 'block';
+        document.getElementById('code-display').textContent   = code;
+      } else if (error) {
+        title.textContent = '❌ Authorisation Failed';
+        title.className   = 'status-err';
+        msg.textContent   = 'TikTok returned an error during the OAuth flow.';
+        document.getElementById('error-section').style.display = 'block';
+        document.getElementById('error-display').textContent  =
+          error + (errDesc ? ': ' + decodeURIComponent(errDesc) : '');
+      } else {
+        title.textContent = '⚠️ No Parameters Found';
+        msg.textContent   = 'This page is the OAuth redirect URI for TikTok API integration. Open it via the TikTok auth flow.';
+      }
+    })();
+  </script>
+</body>
+</html>
